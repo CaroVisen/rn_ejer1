@@ -1,5 +1,6 @@
 import React from 'react';
 import Conthijo1 from './Conthijo1';
+import UsersList from './UsersList';
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,10 +8,12 @@ import {
   View,
   Text,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  TextInput,
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
-import { incrementCont, decrementCont } from './actions/AppActions';
+import { incrementCont, decrementCont, incrementByNumber } from './actions/AppActions';
 
 class Padre extends React.PureComponent {
 
@@ -19,7 +22,8 @@ class Padre extends React.PureComponent {
    this.cont = 0;
 
    this.state = {
-    contador : 0
+    contador : 0,
+    numberI: ''
   
    }
  
@@ -51,13 +55,30 @@ class Padre extends React.PureComponent {
           </View>
         </View>
       </View>
-      <View style={{flex:0.1, flexDirection:'row', backgroundColor:'cyan'}}>
-            <Text>Esteban</Text>
+      <View style={{flex:0.4, flexDirection:'row', backgroundColor:'cyan'}}>
+            {/* <Text>Esteban</Text>
             <Text>Pasiandolo</Text>
-            <Text>Jose Maria Moreno 2087</Text>
+            <Text>Jose Maria Moreno 2087</Text> */}
+            {this.props.picture!='' &&
+              <Image source = {{uri: this.props.picture}}
+              style = {{ width: 200, height: 200 }}
+              />
+            } 
+            <UsersList />
       </View>
-      <View style={{flex:0.8,}}>
-           <TouchableOpacity onPress={() => this.press()}>
+      <View style={{flex:0.5}}>
+        <TextInput
+             style={{height: 40}}
+             placeholder="enter number"
+             onChangeText={textinp => this.setState({numberI: textinp}) }
+             defaultValue={this.state.numberI}
+        />
+        <TouchableOpacity onPress={() => this.props.incrementByNumber(Number(this.state.numberI))}>
+                <Text style={{ fontSize: 24, color: 'blue' }}>
+               Press IncrementContByNum
+               </Text>
+           </TouchableOpacity>
+           <TouchableOpacity onPress={() => this.incrementCont()}>
               <Text style={{ fontSize: 24, color: 'red' }}>
                 Press
               </Text>
@@ -98,11 +119,13 @@ class Padre extends React.PureComponent {
  const mapStateToProps = state => {
   return { 
     testreduxmessage: state.test,
-    conta: state.conta
+    conta: state.conta,
+    picture: state.image
    };
  };
  const mapDispatchToProps = {
   incrementCont,
-  decrementCont
+  decrementCont,
+  incrementByNumber
  }
  export default connect(mapStateToProps, mapDispatchToProps)(Padre);
