@@ -8,11 +8,12 @@ import {
   StatusBar,
   TouchableOpacity,
   FlatList,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native';
  
 import { connect } from 'react-redux';
-import {setPicture}  from './actions/AppActions';
+import {setPicture, fetchUsers  }  from './actions/AppActions';
 
 const DATA = [
    {
@@ -46,9 +47,48 @@ class UsersList extends React.PureComponent {
  constructor(props) {
    super(props);
    this.state = {
-    image: ''
+    image: '',
+    dataSource: [],
+    isLoading: true
    }
  }
+
+ async componentDidMount() {
+  //  setTimeout(() => {
+  //   return fetch('https://randomuser.me/api/?results=3')
+  //   .then(response => response.json())
+  //   .then(responseJson => {
+  //       console.log('datasource: ');
+  //       console.log(responseJson)
+  //     this.setState(
+  //       {
+  //         isLoading: false,
+  //         dataSource: responseJson,
+  //       }
+  //     );
+  //   })
+  //   .catch(error => {
+  //     console.error(error);
+  //   });
+  //  }, 5000);
+  ///////////////////
+  // try {
+  //   const respo = await fetch('https://randomuser.me/api/?results=3')
+  //   const responseJson = await respo.json();
+  //    console.log(responseJson)
+  //       this.setState(
+  //         {
+  //           isLoading: false,
+  //           dataSource: responseJson,
+  //         }
+  //       );
+  //   } catch (error)
+  //   {
+  //     console.log(error)
+  //   }
+  /////////////////
+  this.props.fetchUsers();
+}
 
  
  
@@ -60,36 +100,41 @@ class UsersList extends React.PureComponent {
        style = {{ width: 200, height: 200 }}
        />
  } */}
-        <TouchableOpacity onPress={() => this._onPress(item)}  style={{flexDirection:'row'}}>
-                 <Text style={{flex:0.2}}>{item.name} </Text>
-                 <Text style={{flex:0.2}}>{item.lastName} </Text>
-                 <Text style={{flex:0.5}}>{item.street} </Text>
+      <TouchableOpacity onPress={() => this._onPress(item)}>
+        <Text>{item.name.first} </Text>
+        <Text>{item.name.last} </Text>
+        <Text>{item.location.street.name} {item.location.street.number}</Text>
      </TouchableOpacity>
-  </View>
+    </View>
 );
- 
+
+
 _onPress = (item) => {
- console.log('press en: '+item.name)
- this.setState({image: item.picture});
- console.log(this.state.image);
- this.props.setPicture(this.state.image);
+ console.log('press en: '+item.name.first)
 }
+
  
  
  
    render() {
   
- console.log('users list')
      return (
-       <SafeAreaView style={styles.safeArea}>
-        <View>
-       
-             <FlatList
-              data={DATA}
-              renderItem={this.renderItem}
-              keyExtractor={item => item.id}
-             />
+      <SafeAreaView style={styles.safeArea}>
+      {/* { (!this.state.isLoading) ? */}
+           { (this.props.isfetching===false) ?
+       <View>
+            <FlatList
+            //  data={this.state.dataSource.results}
+            data={this.props.userslist.results}
+             renderItem={this.renderItem}
+             keyExtractor={item => item.login.uuid}
+            />
+      </View>
+       :
+       <View>
+        <ActivityIndicator size="large" color="#00ff00"/>
        </View>
+   }
        </SafeAreaView>
       
      );
@@ -104,9 +149,12 @@ _onPress = (item) => {
  
  const mapStateToProps = state => {
    return { 
+    userslist: state.users,
+    isfetching: state.isFetching
     };
  };
  const mapDispatchToProps = {
-    setPicture
+    setPicture,
+    fetchUsers
   }
  export default connect(mapStateToProps, mapDispatchToProps)(UsersList);

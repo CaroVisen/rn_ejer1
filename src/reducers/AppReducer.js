@@ -1,7 +1,10 @@
 const initialState = {
     test: 'test reducer',
     conta: 0,
-    image:''
+    image:'',
+    isFetching: false,
+    errorMessage: '',
+    users: []
    }
    const AppReducer = (state = initialState, action) => {
     switch(action.type) {
@@ -13,6 +16,12 @@ const initialState = {
           return {...state, conta: state.conta  + action.num};
         case 'SET_PICTURE':
           return {...state, image: action.image};
+        case 'FETCHING_USERS_REQUEST':
+          return {...state, isFetching: true};
+        case 'FETCHING_USERS_FAILURE':
+         return {...state, isFetching: false, errorMessage: action.payload  };
+        case 'FETCHING_USERS_SUCCESS':
+         return {...state, isFetching: false, users: action.payload };
         default:
         return state;  
     }
