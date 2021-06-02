@@ -1,6 +1,7 @@
 import React from 'react';
 import Conthijo1 from './Conthijo1';
 import UsersList from './UsersList';
+import IncrementModal from './IncrementModal';
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,7 +11,8 @@ import {
   StatusBar,
   TouchableOpacity,
   TextInput,
-  Image
+  Image,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 import { incrementCont, decrementCont, incrementByNumber } from './actions/AppActions';
@@ -23,7 +25,8 @@ class Padre extends React.PureComponent {
 
    this.state = {
     contador : 0,
-    numberI: ''
+    numberI: '',
+    showModalIncrement: false
   
    }
  
@@ -35,6 +38,17 @@ class Padre extends React.PureComponent {
       this.cont = this.cont + 1;
       console.log(this.cont);
       this.setState({contador: this.state.contador + 1});
+  }
+
+  incrementContByNumber = () =>
+  {
+    // this.props.incrementCont();
+    this.props.incrementByNumber(Number(this.state.numberI))
+  }
+ 
+  closeModalIncrement = () =>
+  {
+    this.setState({showModalIncrement: false})
   }
  
 
@@ -67,13 +81,66 @@ class Padre extends React.PureComponent {
             <UsersList />
       </View>
       <View style={{flex:0.5}}>
+        <View style={{flex:0.5}}>
+        {(this.state.showModalIncrement) &&
+       <IncrementModal  closemodalincrement={this.closeModalIncrement.bind()}/>
+     }
+{/* <Modal
+         visible={this.state.showModalIncrement}
+         transparent={true}
+         onRequestClose={() => console.log("Close was requested")}
+       >
+         <View
+    
+           style={{
+             //  margin:20,
+             padding: 10,
+          //   backgroundColor: "#475788",
+              backgroundColor:"rgba(0,0,0,0.85)",
+             top: 20,
+             left: 15,
+             right: 15,
+             position: "absolute",
+             borderBottomLeftRadius: 22,
+             borderBottomRightRadius: 22,
+             borderTopLeftRadius: 22,
+             borderTopRightRadius: 22
+ 
+             //  alignItems: 'center'
+           }}
+         >
+           <View style={{ flex: 1, alignItems: "center" }}>
+           <TextInput
+             style={{height: 40, backgroundColor: 'white'}}
+             placeholder="enter number"
+             onChangeText={textinp => this.setState({numberI: textinp}) }
+             defaultValue={this.state.numberI}
+           /> 
+              <TouchableOpacity
+               onPress={() => this.incrementContByNumber()}
+               style={{ paddingTop: 8, paddingBottom: 4, flex: 0.5 }}
+             >
+               <Text style={{ color: "#999", fontSize: 22 }}>Increment</Text>
+             </TouchableOpacity>
+         
+             <TouchableOpacity
+               onPress={() => this.closeModalIncrement()}
+               style={{ paddingTop: 8, paddingBottom: 4, flex: 0.5 }}
+             >
+               <Text style={{ color: "#999", fontSize: 22 }}>Cerrar Modal</Text>
+             </TouchableOpacity>
+           </View>
+         </View>
+       </Modal> */}
+
+        </View>
         <TextInput
              style={{height: 40}}
              placeholder="enter number"
              onChangeText={textinp => this.setState({numberI: textinp}) }
              defaultValue={this.state.numberI}
         />
-        <TouchableOpacity onPress={() => this.props.incrementByNumber(Number(this.state.numberI))}>
+        <TouchableOpacity onPress={() => this.setState({showModalIncrement: true})}>
                 <Text style={{ fontSize: 24, color: 'blue' }}>
                Press IncrementContByNum
                </Text>
