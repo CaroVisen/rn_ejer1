@@ -15,6 +15,7 @@ import {
   Modal
 } from 'react-native';
 import { connect } from 'react-redux';
+import Video from 'react-native-video';
 import { incrementCont, decrementCont, incrementByNumber } from './actions/AppActions';
 
 class Padre extends React.PureComponent {
@@ -56,7 +57,16 @@ class Padre extends React.PureComponent {
    
       return (
        <SafeAreaView style={styles.safeArea}>
-       <View style={{flex:0.1, flexDirection:'row', backgroundColor:'yellow'}}>
+       <View style={{flex:1, flexDirection:'row', backgroundColor:'yellow'}}>
+       <Video source={{uri: "http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"}}   // Can be a URL or a local file.
+       ref={(ref) => {
+         this.player = ref
+         console.log("ref");
+         
+         console.log(ref);
+       }}                                   // Callback when video cannot be loaded
+       style={styles.backgroundVideo} />
+
          <View style={{flex:1, flexDirection:'row'}}>
           <View style={{flex:0.20}}>
             <Text>Nombre</Text>
@@ -145,7 +155,7 @@ class Padre extends React.PureComponent {
                Press IncrementContByNum
                </Text>
            </TouchableOpacity>
-           <TouchableOpacity onPress={() => this.incrementCont()}>
+           <TouchableOpacity onPress={() => this.porps.incrementCont()}>
               <Text style={{ fontSize: 24, color: 'red' }}>
                 Press
               </Text>
@@ -180,8 +190,22 @@ class Padre extends React.PureComponent {
    safeArea: {
      flex: 1,
      backgroundColor: '#ddd'
-   }
+   },
+   backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    width: 300,
+    height: 300
+  },
  });
+
+
+
+
+
 
  const mapStateToProps = state => {
   return { 
